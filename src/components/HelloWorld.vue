@@ -1,20 +1,65 @@
 <template>
-  <div>hello {{num}}</div>
-  <button @click="add">add</button>
+  <h1>todolist</h1>
+  <input type="text" v-model="newTodo" @keyup.enter="addTodo" />
+  <ul>
+    <li
+      :class="{done:item.complete}"
+      @click="toggle(index)"
+      v-for="(item,index) in todos"
+      :key="item.id"
+    >{{item.title}}</li>
+  </ul>
+  <div>{{remaining}}</div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, reactive, toRefs, computed } from "vue";
 export default {
   setup() {
-    const num = ref(0);
-    function add() {
-      num.value += 1;
+    const state = reactive({
+      newTodo: "",
+      todos: [
+        {
+          id: 1,
+          title: "吃饭",
+          complete: true,
+        },
+        {
+          id: 2,
+          title: "喝水",
+          complete: false,
+        },
+        {
+          id: 3,
+          title: "睡觉",
+          complete: false,
+        },
+      ],
+    });
+    function addTodo() {
+      state.todos.push({
+        id: Math.random(),
+        title: state.newTodo,
+        complete: false,
+      });
+      state.newTodo = "";
     }
-    return { num, add };
+
+    function toggle(i) {
+      state.todos[i].complete = !state.todos[i].complete;
+    }
+
+    const remaining = computed(
+      () => state.todos.filter((todo) => !todo.complete).length
+    );
+    // return { state, addTodo };
+    return { ...toRefs(state), addTodo, remaining, toggle };
   },
 };
 </script>
 
 <style scoped>
+.done {
+  text-decoration: line-through;
+}
 </style>
