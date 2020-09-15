@@ -14,7 +14,7 @@
 
 <script>
 import { ref, reactive, toRefs, computed } from "vue";
-
+import addTodoFac from "./addTodo";
 export default {
   name: "App",
   components: {},
@@ -39,15 +39,8 @@ export default {
         },
       ],
     });
-    function addTodo() {
-      state.todos.push({
-        id: Math.random(),
-        title: state.newTodo,
-        complete: false,
-      });
-      state.newTodo = "";
-    }
 
+    const { addTodo } = addTodoFac(state);
     function toggle(i) {
       state.todos[i].complete = !state.todos[i].complete;
     }
